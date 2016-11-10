@@ -1,12 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
-
-## Project branding, version and package mantainer
 project(grSim)
-set(VERSION "1.0.0a2")
+set(VERSION "2.0-beta")
 #set(VENDOR "Parsian")
-set(MAINTAINER "Mani Monajjemi <mani.monajjemi@gmail.com>")
-
+set(MAINTAINER "Mohammad Mahdi Rahimi <mohammadmahdi76@gmail.com>")
 
 # some utils and helper vars
 string(TOLOWER ${CMAKE_PROJECT_NAME} CMAKE_PROJECT_NAME_LOWER)
@@ -14,7 +11,6 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 include(${PROJECT_SOURCE_DIR}/cmake/Utils.cmake)
 standard_config()
 standard_paths(${PROJECT_SOURCE_DIR} bin lib)
-
 
 # definitions for knowing the OS from the code
 if(MSVC)
@@ -41,18 +37,36 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include/net)
 include_directories(${PROJECT_SOURCE_DIR}/include/physics)
 
-
 ## Handling depenendcies
 
 # we will append all libs to this var
 set(libs)
 
+# VarTypes
+# This is a proof of concept inline build of vartypes
+# Problems:
+# 1. Install does not work properly (grsim depends on libvartypes.so)
+# 2. Packaging does not work properly
+# 3. Only tested in Linux
+# 4. Convoluted list of include directories
+# With EXCLUDE_FROM_ALL, all vartypes targets are build and installed properly
+# without that, only libvartypes is build. However install rules are not triggered.
+set(VARTYPES_DIR ${PROJECT_SOURCE_DIR}/3rdparty/vartypes)
+add_subdirectory(${VARTYPES_DIR})
+#add_subdirectory(${VARTYPES_DIR} EXCLUDE_FROM_ALL)
+include_directories(${VARTYPES_DIR})
+include_directories(${VARTYPES_DIR}/vartypes)
+include_directories(${VARTYPES_DIR}/vartypes/primitives)
+include_directories(${VARTYPES_DIR}/vartypes/gui)
+include_directories(${VARTYPES_DIR}/vartypes/xml)
+list(APPEND libs vartypes)
+set_target_properties(vartypes PROPERTIES AUTOMOC False)
+set_target_properties(vartype_example PROPERTIES AUTOMOC False)
+
 # OpenGL
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})
 list(APPEND libs ${OPENGL_LIBRARIES})
-#find_package(GLUT REQUIRED)
-#include_directories(${GLUT_INCLUDE_DIR})
 
 # Qt
 set(QT_USE_QTNETWORK true)
@@ -80,11 +94,6 @@ option(DOUBLE_PRECISION "Use double precision? If not single precision will be u
       add_definitions(-DdSINGLE)
     endif()
   endif()
-
-# VarTypes
-find_package(VarTypes REQUIRED)
-include_directories(${VARTYPES_INCLUDE_DIRS})
-list(APPEND libs ${VARTYPES_LIBRARIES})
 
 # Protobuf
 find_package(Protobuf REQUIRED)

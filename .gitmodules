@@ -1,0 +1,3 @@
+[submodule "3rdparty/vartypes"]
+	path = 3rdparty/vartypes
+	url = https://github.com/szi/vartypes

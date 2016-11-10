@@ -28,19 +28,9 @@ If you run a Debian system, or derivative, first ensure that these dependencies 
 sudo apt-get install build-essential cmake libqt4-dev libgl1-mesa-dev libglu1-mesa-dev libprotobuf-dev protobuf-compiler libode-dev
 ```
 
-Next we need to install VarTypes manually, which itself depends on Qt4 so please make sure that you installed Qt4 first :
+Clone the project (also fetches Vartypes)
 
-    $ (Get VarTypes)
-    $ cd ./vartypes
-    $ mkdir build
-    $ cd build
-    $ cmake ..
-    $ make
-    $ sudo make install
-
-Next, pull down the project:
-
-    $ git clone https://github.com/mani-monaj/grSim.git
+    $ git clone --recursive https://github.com/mani-monaj/grSim.git
     $ cd ./grSim
 
 Create a build directory within the project (this is ignored by .gitignore):
@@ -89,7 +79,7 @@ Next we need to install VarTypes manually :
 
 Next, pull down the project:
 
-    $ git clone https://github.com/mani-monaj/grSim.git
+    $ git clone --recursive https://github.com/mani-monaj/grSim.git
     $ cd ./grSim
 
 Create a build directory within the project (this is ignored by .gitignore):
