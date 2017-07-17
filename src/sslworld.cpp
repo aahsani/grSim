@@ -597,27 +597,50 @@ dReal normalizeAngle(dReal a)
     return a;
 }
 
+
 bool SSLWorld::visibleInCam(int id, double x, double y)
 {
-    id %= 4;
+    double length = cfg->Field_Length()/2;//6.7
+    id %= 8;
     if (id==0)
     {
-        if (x>-0.2 && y>-0.2) return true;
+        if(x<(-length/2 + 0.2) && (y > -0.2)) return true;
     }
     if (id==1)
     {
-        if (x>-0.2 && y<0.2) return true;
+        if(x<(-length/2 + 0.2) && (y < 0.2))  return true;
     }
     if (id==2)
     {
-        if (x<0.2 && y<0.2) return true;
+        if(x > (-length/2 - 0.2) && (x < 0.2) && (y < 0.2))
+            return true;
     }
     if (id==3)
     {
-        if (x<0.2 && y>-0.2) return true;
+        if(x > (-length/2 - 0.2) && (x < 0.2) && (y > -0.2))
+            return true;
+    }
+    if (id==4)
+    {
+        if(x < (length/2 + 0.2) && (x > -0.2) && (y > -0.2))
+            return true;
+    }
+    if (id==5)
+    {
+        if(x < (length/2 + 0.2) && (x > -0.2) && (y < 0.2))
+            return true;
+    }
+    if (id==6)
+    {
+        if(x > (length/2 - 0.2) && y < 0.2) return true;
+    }
+    if (id==7)
+    {
+        if(x > (length/2 - 0.2) && y > -0.2) return true;
     }
     return false;
 }
+
 
 #define CONVUNIT(x) ((int)(1000*(x)))
 SSL_WrapperPacket* SSLWorld::generatePacket(int cam_id)
@@ -712,6 +735,7 @@ SSL_WrapperPacket* SSLWorld::generatePacket(int cam_id)
             }
         }
     }
+
     return packet;
 }
 
@@ -798,6 +822,11 @@ void SSLWorld::sendVisionBuffer()
     sendQueue.push_back(new SendingPacket(generatePacket(1),t+1));
     sendQueue.push_back(new SendingPacket(generatePacket(2),t+2));
     sendQueue.push_back(new SendingPacket(generatePacket(3),t+3));
+    sendQueue.push_back(new SendingPacket(generatePacket(4),t+4));
+    sendQueue.push_back(new SendingPacket(generatePacket(5),t+5));
+    sendQueue.push_back(new SendingPacket(generatePacket(6),t+6));
+    sendQueue.push_back(new SendingPacket(generatePacket(7),t+7));
+
     while (t - sendQueue.front()->t>=cfg->sendDelay())
     {
         SSL_WrapperPacket *packet = sendQueue.front()->packet;
